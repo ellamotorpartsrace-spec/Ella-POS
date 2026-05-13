@@ -1,3 +1,4 @@
+# Ignore specific file
 .agent/
 u296077208_ella_parts_db.sql
 
@@ -9,5 +10,3 @@ backups/
 .vscode/
 .idea/
 *.log
-
-// hide
