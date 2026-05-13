@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Batch Upload Quick Reference</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        h1 {
+            color: #2c3e50;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 10px;
+        }
+
+        h2 {
+            color: #34495e;
+            margin-top: 30px;
+        }
+
+        .feature-box {
+            background: #ecf0f1;
+            border-left: 4px solid #3498db;
+            padding: 15px;
+            margin: 15px 0;
+        }
+
+        .code-sample {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 15px 0;
+        }
+
+        th,
+        td {
+            border: 1px solid #bdc3c7;
+            padding: 12px;
+            text-align: left;
+        }
+
+        th {
+            background: #3498db;
+            color: white;
+        }
+
+        tr:nth-child(even) {
+            background: #ecf0f1;
+        }
+
+        .required {
+            color: #e74c3c;
+            font-weight: bold;
+        }
+
+        .optional {
+            color: #95a5a6;
+        }
+
+        .url {
+            background: #fff3cd;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: monospace;
+        }
+
+        ul li {
+            margin: 8px 0;
+        }
+
+        .step {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+            padding: 10px;
+            margin: 10px 0;
+        }
+
+        .warning {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 10px;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>📦 Batch Product Upload - Quick Reference Guide</h1>
+
+    <div class="feature-box">
+        <h3>🚀 Quick Start</h3>
+        <ol>
+            <li>Navigate to <span class="url">Inventory → Batch Upload</span></li>
+            <li>Download the CSV template</li>
+            <li>Fill in your products (delete example rows)</li>
+            <li>Upload the file and process</li>
+        </ol>
+    </div>
+
+    <h2>📍 Access Points</h2>
+    <div class="step">
+        <strong>Method 1:</strong> From Inventory Index Page<br>
+        <code>views/inventory/index.php</code> → Click <strong>"Batch Upload"</strong> button (blue button with CSV
+        icon)
+    </div>
+    <div class="step">
+        <strong>Method 2:</strong> From Create Product Page<br>
+        <code>views/inventory/create.php</code> → Click <strong>"Batch Upload"</strong> button (top right)
+    </div>
+    <div class="step">
+        <strong>Direct URL:</strong><br>
+        <code class="url">http://localhost/ella-pos/views/inventory/batch_upload.php</code>
+    </div>
+
+    <h2>📋 CSV Template Format</h2>
+    <p>Download template from: <span class="url">api/inventory/download_template.php</span></p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Column Name</th>
+                <th>Type</th>
+                <th>Description</th>
+                <th>Example</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>product_name</strong></td>
+                <td><span class="required">REQUIRED</span></td>
+                <td>Product name</td>
+                <td>Michelin City Grip Front</td>
+            </tr>
+            <tr>
+                <td><strong>category_id</strong></td>
+                <td><span class="required">REQUIRED</span></td>
+                <td>Category ID (see template for list)</td>
+                <td>1</td>
+            </tr>
+            <tr>
+                <td><strong>price_capital</strong></td>
+                <td><span class="required">REQUIRED*</span></td>
+                <td>Cost price (*or price_retail required)</td>
+                <td>2500.00</td>
+            </tr>
+            <tr>
+                <td><strong>price_retail</strong></td>
+                <td><span class="required">REQUIRED*</span></td>
+                <td>Selling price (*or price_capital required)</td>
+                <td>3500.00</td>
+            </tr>
+            <tr>
+                <td>brand_name</td>
+                <td><span class="optional">Optional</span></td>
+                <td>Brand/manufacturer</td>
+                <td>Michelin</td>
+            </tr>
+            <tr>
+                <td>description</td>
+                <td><span class="optional">Optional</span></td>
+                <td>Product description</td>
+                <td>High performance tire</td>
+            </tr>
+            <tr>
+                <td>variation_name</td>
+                <td><span class="optional">Optional</span></td>
+                <td>Size/color/type (default: "Standard")</td>
+                <td>110/70-17</td>
+            </tr>
+            <tr>
+                <td>unit_type</td>
+                <td><span class="optional">Optional</span></td>
+                <td>pc, set, box, pair, bottle, kit, roll (default: "pc")</td>
+                <td>pc</td>
+            </tr>
+            <tr>
+                <td>sku</td>
+                <td><span class="optional">Optional</span></td>
+                <td>Stock keeping unit code</td>
+                <td>MICH-110-70-17</td>
+            </tr>
+            <tr>
+                <td>barcode</td>
+                <td><span class="optional">Optional</span></td>
+                <td>Barcode number</td>
+                <td>1234567890123</td>
+            </tr>
+            <tr>
+                <td>price_wholesale</td>
+                <td><span class="optional">Optional</span></td>
+                <td>Wholesale price</td>
+                <td>3200.00</td>
+            </tr>
+            <tr>
+                <td>price_dealer</td>
+                <td><span class="optional">Optional</span></td>
+                <td>Dealer price</td>
+                <td>2800.00</td>
+            </tr>
+            <tr>
+                <td>initial_stock</td>
+                <td><span class="optional">Optional</span></td>
+                <td>Starting quantity (default: 0)</td>
+                <td>10</td>
+            </tr>
+            <tr>
+                <td>low_stock_threshold</td>
+                <td><span class="optional">Optional</span></td>
+                <td>Alert level (default: 5)</td>
+                <td>5</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>📄 CSV Example</h2>
+    <div class="code-sample">
+        product_name,brand_name,category_id,description,variation_name,unit_type,sku,barcode,price_capital,price_retail,price_wholesale,price_dealer,initial_stock,low_stock_threshold
+        Michelin City Grip Front,Michelin,1,High performance
+        tire,110/70-17,pc,MICH-110-70-17,1234567890123,2500.00,3500.00,3200.00,2800.00,10,5
+        Castrol Engine Oil 4T,Castrol,1,Fully synthetic 4-stroke oil,1
+        Liter,bottle,CAST-4T-1L,9876543210987,450.00,650.00,600.00,550.00,50,10
+        Brake Pad Set,Yamaha,1,Genuine Yamaha brake pads,Front,set,YAM-BRK-FRONT,,380.00,550.00,,,20,3</div>
+
+    <h2>⚙️ Upload Options</h2>
+    <div class="feature-box">
+        <h4>Skip Duplicates (Recommended)</h4>
+        <p>✅ Checked by default. If a product with the same SKU or Barcode already exists, it will be skipped and
+            reported in warnings.</p>
+
+        <h4>Update Existing</h4>
+        <p>If enabled, products with matching SKU/Barcode will have their prices updated, and initial_stock will be
+            ADDED to current stock.</p>
+    </div>
+
+    <h2>✅ Validation Rules</h2>
+    <ul>
+        <li>✓ Product name must not be empty</li>
+        <li>✓ Category ID must be a valid number and exist in database</li>
+        <li>✓ At least one price (capital OR retail) must be provided</li>
+        <li>✓ If only capital price provided, retail = capital</li>
+        <li>✓ If only retail price provided, capital = retail</li>
+        <li>✓ Empty rows are automatically skipped</li>
+        <li>✓ Rows starting with # are treated as comments and skipped</li>
+    </ul>
+
+    <h2>🔍 Duplicate Detection</h2>
+    <p>The system checks for duplicates based on:</p>
+    <ul>
+        <li><strong>SKU</strong> - If SKU is provided and matches existing product</li>
+        <li><strong>Barcode</strong> - If Barcode is provided and matches existing product</li>
+    </ul>
+
+    <div class="warning">
+        <strong>⚠️ Note:</strong> If neither SKU nor Barcode is provided, the system cannot detect duplicates and will
+        create a new product even if the name is identical to an existing one.
+    </div>
+
+    <h2>📊 Processing Flow</h2>
+    <ol class="step">
+        <li>File is uploaded and validated (format check)</li>
+        <li>CSV is parsed, headers are extracted</li>
+        <li>Each row is validated for required fields</li>
+        <li>Duplicate check (if SKU/Barcode exists)</li>
+        <li>For new products:
+            <ul>
+                <li>Insert into <code>products</code> table</li>
+                <li>Insert into <code>product_variations</code> table</li>
+                <li>Insert into <code>inventory</code> table (if stock > 0)</li>
+                <li>Create <code>stock_movements</code> record</li>
+            </ul>
+        </li>
+        <li>For updates (if update mode enabled):
+            <ul>
+                <li>Update <code>product_variations</code> prices</li>
+                <li>Add to existing stock</li>
+                <li>Create <code>stock_movements</code> record</li>
+            </ul>
+        </li>
+        <li>Return summary with success/skip/error counts</li>
+    </ol>
+
+    <h2>📈 Results & Feedback</h2>
+    <div class="feature-box">
+        <h4>Success Message</h4>
+        <p style="color: #28a745;">✔ Batch upload completed: X products added/updated, Y skipped, Z errors</p>
+
+        <h4>Warnings Section</h4>
+        <p>Lists each problematic row with specific reason:</p>
+        <ul>
+            <li>Row 5: Product name is required, skipped</li>
+            <li>Row 8: Duplicate found ('Existing Product Name'), skipped</li>
+            <li>Row 12: Valid category ID is required, skipped</li>
+        </ul>
+    </div>
+
+    <h2>🎯 Use Cases</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Scenario</th>
+                <th>Recommended Settings</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Initial inventory setup (new system)</td>
+                <td>Skip duplicates: ✅ ON<br>Update existing: ❌ OFF</td>
+            </tr>
+            <tr>
+                <td>Adding new products to existing inventory</td>
+                <td>Skip duplicates: ✅ ON<br>Update existing: ❌ OFF</td>
+            </tr>
+            <tr>
+                <td>Price update for many products</td>
+                <td>Skip duplicates: ❌ OFF<br>Update existing: ✅ ON</td>
+            </tr>
+            <tr>
+                <td>Re-stock and price update</td>
+                <td>Skip duplicates: ❌ OFF<br>Update existing: ✅ ON</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>🛠️ API Endpoints</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Endpoint</th>
+                <th>Method</th>
+                <th>Purpose</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><code>api/inventory/download_template.php</code></td>
+                <td>GET</td>
+                <td>Download CSV template with examples</td>
+            </tr>
+            <tr>
+                <td><code>api/inventory/process_batch_upload.php</code></td>
+                <td>POST</td>
+                <td>Process uploaded CSV/Excel file</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>💡 Tips & Best Practices</h2>
+    <ul>
+        <li>✓ Always download and use the template to ensure correct format</li>
+        <li>✓ Delete the example rows and instruction rows before uploading</li>
+        <li>✓ Use unique SKU codes for reliable duplicate detection</li>
+        <li>✓ Test with a small batch (5-10 products) first</li>
+        <li>✓ Review the category IDs in the template or upload page</li>
+        <li>✓ If you see warnings, fix them and re-upload</li>
+        <li>✓ Keep a backup of your original CSV file</li>
+        <li>✓ For Excel files (.xlsx), ensure PhpSpreadsheet is installed or convert to CSV</li>
+    </ul>
+
+    <div class="warning">
+        <h3>⚠️ Excel Support Requirement</h3>
+        <p>For <code>.xlsx</code> and <code>.xls</code> file support, you need to install PhpSpreadsheet:</p>
+        <div class="code-sample">composer require phpoffice/phpspreadsheet</div>
+        <p>Without this library, you must convert Excel files to CSV format before uploading.</p>
+    </div>
+
+    <h2>🔐 Security & Permissions</h2>
+    <ul>
+        <li>✓ User must be logged in</li>
+        <li>✓ Requires role: Admin, Manager, or Stockman</li>
+        <li>✓ All stock movements are logged with user ID</li>
+        <li>✓ Transaction-based processing prevents partial data corruption</li>
+    </ul>
+
+    <hr style="margin: 40px 0;">
+    <p style="text-align: center; color: #7f8c8d;">
+        <em>For detailed technical documentation, see BATCH_UPLOAD_README.md</em>
+    </p>
+</body>
+
+</html>

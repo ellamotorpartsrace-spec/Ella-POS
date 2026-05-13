@@ -1,0 +1,297 @@
+/* assets/css/maintenance.css */
+:root {
+    --primary: #3B82F6;
+    --primary-hover: #2563EB;
+    --primary-glow: rgba(59, 130, 246, 0.4);
+    --bg-mesh-1: #0f172a;
+    --bg-mesh-2: #1e293b;
+    --bg-mesh-3: #1e1b4b;
+    --bg-mesh-4: #020617;
+}
+
+[data-theme="light"] {
+    --bg-mesh-1: #f8fafc;
+    --bg-mesh-2: #f1f5f9;
+    --bg-mesh-3: #e2e8f0;
+    --bg-mesh-4: #f8fafc;
+}
+
+body {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    margin: 0;
+    font-family: 'Inter', sans-serif;
+    transition: background-color 0.4s ease, color 0.4s ease;
+    background: var(--bg-mesh-4);
+    position: relative;
+}
+
+/* Animated Mesh Background */
+.mesh-background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    overflow: hidden;
+    background-color: var(--bg-mesh-4);
+}
+
+.mesh-ball {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(100px);
+    opacity: 0.15;
+    animation: mesh-move 20s infinite alternate cubic-bezier(0.45, 0, 0.55, 1);
+}
+
+.mesh-ball-1 {
+    width: 600px;
+    height: 600px;
+    background: var(--primary);
+    top: -10%;
+    left: -10%;
+    animation-duration: 25s;
+}
+
+.mesh-ball-2 {
+    width: 500px;
+    height: 500px;
+    background: #8b5cf6;
+    bottom: -10%;
+    right: -10%;
+    animation-duration: 30s;
+    animation-delay: -5s;
+}
+
+.mesh-ball-3 {
+    width: 400px;
+    height: 400px;
+    background: #0ea5e9;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    animation: mesh-rotate 40s infinite linear;
+}
+
+@keyframes mesh-move {
+    0% { transform: translate(0, 0) scale(1); }
+    100% { transform: translate(100px, 50px) scale(1.1); }
+}
+
+@keyframes mesh-rotate {
+    from { transform: translate(-50%, -50%) rotate(0deg); }
+    to { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+.maintenance-container {
+    padding: 2rem;
+    position: relative;
+    z-index: 10;
+    width: 100%;
+    max-width: 600px;
+    text-align: center;
+}
+
+/* Glassmorphism Refined */
+.glass-card {
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid var(--glass-border);
+    border-radius: 32px;
+    padding: 4rem 3rem;
+    box-shadow: 
+        0 25px 50px -12px rgba(0, 0, 0, 0.5),
+        inset 0 1px 1px rgba(255, 255, 255, 0.1);
+    animation: cardEntrance 1s cubic-bezier(0.16, 1, 0.3, 1);
+    position: relative;
+}
+
+/* Status Badge */
+.status-badge {
+    position: absolute;
+    top: 1.5rem;
+    right: 2rem;
+    background: rgba(59, 130, 246, 0.1);
+    border: 1px solid rgba(59, 130, 246, 0.2);
+    padding: 0.4rem 1rem;
+    border-radius: 99px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--primary);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.status-dot {
+    width: 8px;
+    height: 8px;
+    background: var(--primary);
+    border-radius: 50%;
+    box-shadow: 0 0 10px var(--primary);
+    animation: pulse 2s infinite;
+}
+
+.icon-wrapper {
+    width: 110px;
+    height: 110px;
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-hover) 100%);
+    border-radius: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 2.5rem;
+    position: relative;
+    box-shadow: 0 15px 35px var(--primary-glow);
+    transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.icon-wrapper:hover {
+    transform: scale(1.05) rotate(5deg);
+}
+
+.icon-wrapper i {
+    font-size: 3.5rem;
+    color: white;
+    /* Slow rotation for gears */
+    animation: rotate-gear 8s infinite linear;
+}
+
+h1 {
+    font-size: 2.75rem;
+    font-weight: 800;
+    margin-bottom: 1.25rem;
+    background: linear-gradient(to bottom right, var(--text-primary) 30%, var(--text-secondary));
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+}
+
+p {
+    color: var(--text-secondary);
+    font-size: 1.15rem;
+    line-height: 1.7;
+    margin-bottom: 3rem;
+    max-width: 450px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.progress-loader {
+    width: 240px;
+    height: 6px;
+    background: var(--input-bg);
+    border-radius: 12px;
+    margin: 0 auto 3rem;
+    overflow: hidden;
+    position: relative;
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.progress-loader::after {
+    content: '';
+    position: absolute;
+    width: 40%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, var(--primary), transparent);
+    animation: progress-slide 2.5s infinite ease-in-out;
+}
+
+.theme-toggle-btn {
+    position: fixed;
+    top: 2rem;
+    right: 2rem;
+    width: 48px;
+    height: 48px;
+    border-radius: 16px;
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    color: var(--text-primary);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    backdrop-filter: blur(12px);
+    z-index: 100;
+}
+
+.theme-toggle-btn:hover {
+    transform: rotate(45deg);
+    background: var(--primary);
+    color: white;
+    box-shadow: 0 10px 20px var(--primary-glow);
+}
+
+.brand-footer {
+    position: fixed;
+    bottom: 2.5rem;
+    left: 0;
+    width: 100%;
+    text-align: center;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    letter-spacing: 0.05em;
+    font-weight: 500;
+    opacity: 0.5;
+    text-transform: uppercase;
+}
+
+/* Animations */
+@keyframes cardEntrance {
+    from { opacity: 0; transform: translateY(30px) scale(0.95); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(0.85); }
+}
+
+@keyframes rotate-gear {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+@keyframes progress-slide {
+    0% { left: -100%; }
+    100% { left: 100%; }
+}
+
+/* Theme specifics matching existing project */
+[data-theme="light"] h1 {
+    background: linear-gradient(to bottom right, #0f172a, #475569);
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+}
+
+[data-theme="light"] .mesh-ball {
+    opacity: 0.1;
+}
+
+@media (max-width: 576px) {
+    .glass-card {
+        padding: 3rem 1.5rem;
+        border-radius: 24px;
+    }
+    h1 {
+        font-size: 2.25rem;
+    }
+    .status-badge {
+        top: 1rem;
+        right: 1rem;
+        font-size: 0.65rem;
+    }
+}

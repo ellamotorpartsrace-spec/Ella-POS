@@ -1,0 +1,178 @@
+/* ============================================================
+   ELLA HOTKEYS — Keyboard Shortcut Help & Badge
+   ============================================================ */
+
+/* Floating help badge */
+.ella-hotkey-badge {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--primary-color, #3B82F6);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    z-index: 1050;
+    box-shadow: 0 4px 16px rgba(59, 130, 246, 0.4);
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    border: none;
+    opacity: 0.7;
+}
+
+.ella-hotkey-badge:hover {
+    transform: scale(1.15);
+    opacity: 1;
+    box-shadow: 0 6px 24px rgba(59, 130, 246, 0.5);
+}
+
+/* Help modal overlay */
+.ella-hotkey-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    z-index: 9998;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.25s ease;
+}
+
+.ella-hotkey-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Help modal */
+.ella-hotkey-modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.9);
+    background: var(--card-bg, #1e293b);
+    border: 1px solid var(--border-color, #334155);
+    border-radius: 16px;
+    padding: 28px 32px;
+    z-index: 9999;
+    max-width: 520px;
+    width: 90%;
+    max-height: 80vh;
+    overflow-y: auto;
+    box-shadow: 0 24px 48px rgba(0, 0, 0, 0.3);
+    color: var(--text-primary, #f8fafc);
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s cubic-bezier(0.21, 1.02, 0.73, 1);
+}
+
+.ella-hotkey-modal.active {
+    opacity: 1;
+    visibility: visible;
+    transform: translate(-50%, -50%) scale(1);
+}
+
+.ella-hotkey-modal h5 {
+    margin-bottom: 20px;
+    font-weight: 700;
+    font-size: 1.15rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.ella-hotkey-section {
+    margin-bottom: 18px;
+}
+
+.ella-hotkey-section h6 {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-secondary, #94a3b8);
+    margin-bottom: 10px;
+    font-weight: 600;
+}
+
+.ella-hotkey-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border-color, #334155);
+}
+
+.ella-hotkey-row:last-child {
+    border-bottom: none;
+}
+
+.ella-hotkey-label {
+    font-size: 0.9rem;
+    color: var(--text-primary, #f8fafc);
+}
+
+/* Keyboard key style */
+.ella-kbd {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 32px;
+    padding: 4px 10px;
+    font-family: 'Inter', 'Segoe UI', monospace;
+    font-size: 0.75rem;
+    font-weight: 600;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid var(--border-color, #334155);
+    border-radius: 6px;
+    color: var(--text-primary, #f8fafc);
+    box-shadow: 0 2px 0 rgba(0, 0, 0, 0.15);
+}
+
+[data-theme="light"] .ella-kbd {
+    background: rgba(0, 0, 0, 0.06);
+    box-shadow: 0 2px 0 rgba(0, 0, 0, 0.08);
+}
+
+.ella-hotkey-close {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background: none;
+    border: none;
+    color: var(--text-secondary, #94a3b8);
+    font-size: 1.1rem;
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: 6px;
+    transition: all 0.15s ease;
+}
+
+.ella-hotkey-close:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--text-primary, #f8fafc);
+}
+
+[data-theme="light"] .ella-hotkey-close:hover {
+    background: rgba(0, 0, 0, 0.05);
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+    .ella-hotkey-modal {
+        padding: 20px;
+        width: 95%;
+    }
+
+    .ella-hotkey-badge {
+        bottom: 12px;
+        left: 12px;
+        width: 36px;
+        height: 36px;
+        font-size: 0.9rem;
+    }
+}

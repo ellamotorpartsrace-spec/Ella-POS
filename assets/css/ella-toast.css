@@ -1,0 +1,200 @@
+/* ============================================================
+   ELLA TOAST — Global Notification System
+   ============================================================ */
+
+/* Container — fixed top-right */
+#ella-toast-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    pointer-events: none;
+    max-width: 380px;
+    width: 100%;
+}
+
+/* Individual toast */
+.ella-toast {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 18px;
+    border-radius: 12px;
+    background: var(--card-bg, #1e293b);
+    border: 1px solid var(--border-color, #334155);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25), 0 2px 8px rgba(0, 0, 0, 0.1);
+    color: var(--text-primary, #f8fafc);
+    font-size: 0.9rem;
+    font-weight: 500;
+    pointer-events: all;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    animation: ellaToastIn 0.35s cubic-bezier(0.21, 1.02, 0.73, 1) forwards;
+    overflow: hidden;
+    position: relative;
+}
+
+.ella-toast.removing {
+    animation: ellaToastOut 0.3s cubic-bezier(0.4, 0, 1, 1) forwards;
+}
+
+/* Progress bar at bottom */
+.ella-toast-progress {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 3px;
+    border-radius: 0 0 12px 12px;
+    animation: ellaToastProgress linear forwards;
+}
+
+/* Icon */
+.ella-toast-icon {
+    flex-shrink: 0;
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.85rem;
+}
+
+/* Message */
+.ella-toast-message {
+    flex: 1;
+    line-height: 1.4;
+    word-break: break-word;
+}
+
+/* Close button */
+.ella-toast-close {
+    flex-shrink: 0;
+    background: none;
+    border: none;
+    color: var(--text-secondary, #94a3b8);
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    transition: all 0.15s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.ella-toast-close:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--text-primary, #f8fafc);
+}
+
+[data-theme="light"] .ella-toast-close:hover {
+    background: rgba(0, 0, 0, 0.05);
+}
+
+/* Action button (e.g., UNDO) */
+.ella-toast-action {
+    flex-shrink: 0;
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #fff;
+    cursor: pointer;
+    padding: 4px 12px;
+    border-radius: 6px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    transition: all 0.15s ease;
+    text-transform: uppercase;
+}
+.ella-toast-action:hover {
+    background: rgba(255, 255, 255, 0.25);
+    transform: scale(1.05);
+}
+[data-theme="light"] .ella-toast-action {
+    background: rgba(0, 0, 0, 0.08);
+    border-color: rgba(0, 0, 0, 0.15);
+    color: inherit;
+}
+[data-theme="light"] .ella-toast-action:hover {
+    background: rgba(0, 0, 0, 0.15);
+}
+
+/* ---- TYPE COLORS ---- */
+.ella-toast--success .ella-toast-icon {
+    background: rgba(34, 197, 94, 0.15);
+    color: #22c55e;
+}
+.ella-toast--success .ella-toast-progress {
+    background: #22c55e;
+}
+
+.ella-toast--error .ella-toast-icon {
+    background: rgba(239, 68, 68, 0.15);
+    color: #ef4444;
+}
+.ella-toast--error .ella-toast-progress {
+    background: #ef4444;
+}
+
+.ella-toast--warning .ella-toast-icon {
+    background: rgba(245, 158, 11, 0.15);
+    color: #f59e0b;
+}
+.ella-toast--warning .ella-toast-progress {
+    background: #f59e0b;
+}
+
+.ella-toast--info .ella-toast-icon {
+    background: rgba(59, 130, 246, 0.15);
+    color: #3b82f6;
+}
+.ella-toast--info .ella-toast-progress {
+    background: #3b82f6;
+}
+
+/* ---- ANIMATIONS ---- */
+@keyframes ellaToastIn {
+    from {
+        opacity: 0;
+        transform: translateX(40px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0) scale(1);
+    }
+}
+
+@keyframes ellaToastOut {
+    from {
+        opacity: 1;
+        transform: translateX(0) scale(1);
+    }
+    to {
+        opacity: 0;
+        transform: translateX(40px) scale(0.95);
+    }
+}
+
+@keyframes ellaToastProgress {
+    from { width: 100%; }
+    to { width: 0%; }
+}
+
+/* ---- RESPONSIVE ---- */
+@media (max-width: 480px) {
+    #ella-toast-container {
+        top: 10px;
+        right: 10px;
+        left: 10px;
+        max-width: none;
+    }
+
+    .ella-toast {
+        padding: 12px 14px;
+        font-size: 0.85rem;
+    }
+}
