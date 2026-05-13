@@ -1,0 +1,11 @@
+.agent/
+u296077208_ella_parts_db.sql
+
+# Common ignores
+logs/
+tmp/
+backups/
+.qodo/
+.vscode/
+.idea/
+*.log
