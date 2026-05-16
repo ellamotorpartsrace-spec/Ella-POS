@@ -145,6 +145,53 @@ try {
             </div>
         <?php endif; ?>
 
+        <!-- SHOPEE SYNC -->
+        <?php if ($role === 'admin' || in_array($role, ['manager'])): ?>
+            <div class="sidebar-heading text-uppercase text-white-50 small fw-bold px-3 mt-3 mb-1 d-flex justify-content-between align-items-center"
+                style="cursor: pointer;" data-bs-toggle="collapse" data-bs-target="#shopeeCollapse">
+                <span class="nav-text">Shopee Sync</span>
+                <i class="fa-solid fa-chevron-down small transition-transform" id="shopeeChevron"></i>
+            </div>
+            <div class="collapse <?= strpos($_SERVER['REQUEST_URI'], 'shopee') !== false ? 'show' : '' ?>" id="shopeeCollapse">
+                <li>
+                    <a href="<?= BASE_URL ?>views/shopee/index.php"
+                        class="<?= strpos($_SERVER['REQUEST_URI'], 'shopee') !== false && $current_page === 'index.php' ? 'active' : '' ?>">
+                        <i class="fa-solid fa-gauge-high"></i> <span class="nav-text">Dashboard</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="<?= BASE_URL ?>views/shopee/products.php"
+                        class="<?= $current_page === 'products.php' && strpos($_SERVER['REQUEST_URI'], 'shopee') !== false ? 'active' : '' ?>">
+                        <i class="fa-solid fa-bag-shopping"></i> <span class="nav-text">Shopee Products</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="<?= BASE_URL ?>views/shopee/mapping.php"
+                        class="<?= $current_page === 'mapping.php' ? 'active' : '' ?>">
+                        <i class="fa-solid fa-link"></i> <span class="nav-text">Product Mapping</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="<?= BASE_URL ?>views/shopee/allocation.php"
+                        class="<?= $current_page === 'allocation.php' && strpos($_SERVER['REQUEST_URI'], 'shopee') !== false ? 'active' : '' ?>">
+                        <i class="fa-solid fa-sliders"></i> <span class="nav-text">Stock Allocation</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="<?= BASE_URL ?>views/shopee/logs.php"
+                        class="<?= $current_page === 'logs.php' && strpos($_SERVER['REQUEST_URI'], 'shopee') !== false ? 'active' : '' ?>">
+                        <i class="fa-solid fa-clock-rotate-left"></i> <span class="nav-text">Sync Logs</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="<?= BASE_URL ?>views/shopee/settings.php"
+                        class="<?= $current_page === 'settings.php' && strpos($_SERVER['REQUEST_URI'], 'shopee') !== false ? 'active' : '' ?>">
+                        <i class="fa-solid fa-gear"></i> <span class="nav-text">Settings</span>
+                    </a>
+                </li>
+            </div>
+        <?php endif; ?>
+
         <!-- SALES & FINANCE -->
         <?php if (hasPermission('view_sales') || hasPermission('view_finance') || hasPermission('view_receivables') || hasPermission('view_payables') || hasPermission('view_expenses') || hasPermission('view_buyers') || hasPermission('view_wallet_ledger') || hasPermission('view_product_history') || hasPermission('manage_service_fees')): ?>
             <div class="sidebar-heading text-uppercase text-white-50 small fw-bold px-3 mt-3 mb-1 d-flex justify-content-between align-items-center"

@@ -1,0 +1,897 @@
+/* ==============================================
+   SHOPEE SYNC MODULE — SHARED DESIGN SYSTEM
+   ============================================== */
+
+/* ── Theme Tokens ── */
+:root {
+    --shopee-primary: #ee4d2d;
+    --shopee-hover: #d73a1c;
+    --shopee-light: rgba(238, 77, 45, 0.12);
+    --shopee-gradient: linear-gradient(135deg, #ee4d2d 0%, #ff7849 100%);
+
+    --sp-radius-sm: 8px;
+    --sp-radius-md: 12px;
+    --sp-radius-lg: 16px;
+    --sp-radius-xl: 20px;
+    --sp-shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.18);
+    --sp-shadow-md: 0 4px 12px rgba(0, 0, 0, 0.12);
+    --sp-shadow-lg: 0 8px 30px rgba(0, 0, 0, 0.15);
+
+    /* Premium Gradients */
+    --sp-grad-primary: linear-gradient(135deg, #ee4d2d 0%, #ff7849 100%);
+    --sp-grad-info: linear-gradient(135deg, #3b82f6 0%, #60a5fa 100%);
+    --sp-grad-success: linear-gradient(135deg, #10b981 0%, #34d399 100%);
+    --sp-grad-warning: linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%);
+    --sp-grad-danger: linear-gradient(135deg, #ef4444 0%, #f87171 100%);
+
+    /* Status */
+    --sp-success: #34d399;
+    --sp-success-bg: rgba(16, 185, 129, 0.15);
+    --sp-warning: #fbbf24;
+    --sp-warning-bg: rgba(245, 158, 11, 0.15);
+    --sp-danger: #f87171;
+    --sp-danger-bg: rgba(239, 68, 68, 0.15);
+    --sp-info: #60a5fa;
+    --sp-info-bg: rgba(59, 130, 246, 0.15);
+    --sp-neutral-bg: rgba(255, 255, 255, 0.08);
+    --sp-neutral-text: #94a3b8;
+
+    /* Test Banner */
+    --sp-test-bg: rgba(59, 130, 246, 0.12);
+    --sp-test-border: rgba(59, 130, 246, 0.3);
+    --sp-test-text: #60a5fa;
+}
+
+[data-theme="light"] {
+    --shopee-light: #fff5f3;
+    --sp-shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.06);
+    --sp-shadow-md: 0 4px 12px rgba(0, 0, 0, 0.06);
+    --sp-shadow-lg: 0 8px 30px rgba(0, 0, 0, 0.08);
+
+    --sp-success: #10b981;
+    --sp-success-bg: #d1fae5;
+    --sp-warning: #f59e0b;
+    --sp-warning-bg: #fef3c7;
+    --sp-danger: #ef4444;
+    --sp-danger-bg: #fee2e2;
+    --sp-info: #3b82f6;
+    --sp-info-bg: #dbeafe;
+    --sp-neutral-bg: #f1f5f9;
+    --sp-neutral-text: #64748b;
+
+    --sp-test-bg: #eff6ff;
+    --sp-test-border: #bfdbfe;
+    --sp-test-text: #1e40af;
+}
+
+/* ── Page Layout ── */
+.sp-page {
+    /* Remove fixed width to allow natural flow */
+    width: auto;
+}
+
+/* Fix for the "pushed content" issue where margin + 100% width causes overflow */
+#page-content-wrapper {
+    width: auto !important;
+    min-width: 0; /* Allow shrinking */
+}
+
+/* ── Typography ── */
+.sp-title {
+    font-weight: 800;
+    font-size: 1.6rem;
+    letter-spacing: -0.03em;
+    color: var(--text-primary);
+}
+
+.sp-subtitle {
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+    margin-top: 2px;
+}
+
+.text-shopee {
+    color: var(--shopee-primary) !important;
+}
+
+/* ── Breadcrumb Nav ── */
+.sp-breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    margin-bottom: 0.5rem;
+}
+
+.sp-breadcrumb a {
+    color: var(--shopee-primary);
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.sp-breadcrumb a:hover {
+    text-decoration: underline;
+}
+
+/* ── Buttons ── */
+.btn-shopee {
+    background: var(--shopee-gradient);
+    color: #fff;
+    border: none;
+    border-radius: var(--sp-radius-sm);
+    font-weight: 600;
+    padding: 0.5rem 1.25rem;
+    transition: all 0.25s ease;
+    box-shadow: 0 2px 8px rgba(238, 77, 45, 0.25);
+}
+
+.btn-shopee:hover {
+    filter: brightness(1.08);
+    color: #fff;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 14px rgba(238, 77, 45, 0.35);
+}
+
+.btn-shopee:active {
+    transform: translateY(0);
+}
+
+.btn-outline-shopee {
+    background: transparent;
+    color: var(--shopee-primary);
+    border: 1.5px solid var(--border-color);
+    border-radius: var(--sp-radius-sm);
+    font-weight: 600;
+    padding: 0.5rem 1.25rem;
+    transition: all 0.2s ease;
+}
+
+.btn-outline-shopee:hover {
+    background: var(--shopee-light);
+    border-color: var(--shopee-primary);
+    color: var(--shopee-primary);
+}
+
+.btn-ghost {
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    padding: 0.4rem 0.75rem;
+    border-radius: var(--sp-radius-sm);
+    transition: all 0.2s;
+}
+
+.btn-ghost:hover {
+    background: var(--sp-neutral-bg);
+    color: var(--text-primary);
+}
+
+/* ── Stat Cards ── */
+.sp-stat-card {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-color);
+    border-radius: var(--sp-radius-lg);
+    padding: 1.25rem 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    box-shadow: var(--sp-shadow-sm);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+    height: 100%;
+}
+
+.sp-stat-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--sp-shadow-md);
+    border-color: rgba(238, 77, 45, 0.3);
+}
+
+.sp-stat-icon {
+    width: 54px;
+    height: 54px;
+    border-radius: var(--sp-radius-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    flex-shrink: 0;
+    transition: transform 0.3s ease;
+}
+
+.sp-stat-card:hover .sp-stat-icon {
+    transform: scale(1.1) rotate(-5deg);
+}
+
+.sp-stat-value {
+    font-size: 1.75rem;
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -0.03em;
+    margin-bottom: 2px;
+}
+
+.sp-stat-label {
+    font-size: 0.7rem;
+    color: var(--text-secondary);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+}
+
+/* ── Dashboard Specific ── */
+.sp-status-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 8px;
+    position: relative;
+}
+
+.sp-status-dot.online {
+    background: var(--sp-success);
+    box-shadow: 0 0 0 rgba(16, 185, 129, 0.4);
+    animation: sp-pulse-success 2s infinite;
+}
+
+@keyframes sp-pulse-success {
+    0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+    70% { box-shadow: 0 0 0 10px rgba(16, 185, 129, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+}
+
+.sp-health-item {
+    padding: 1.25rem;
+    border-radius: var(--sp-radius-md);
+    background: var(--sp-neutral-bg);
+    border: 1px solid var(--border-color);
+    transition: all 0.2s ease;
+}
+
+.sp-health-item:hover {
+    background: var(--bg-surface-hover);
+    border-color: var(--shopee-primary);
+}
+
+.sp-quick-link {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 1.25rem;
+    border-radius: var(--sp-radius-md);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+    text-decoration: none;
+    transition: all 0.25s ease;
+    background: var(--bg-surface);
+}
+
+.sp-quick-link:hover {
+    border-color: var(--shopee-primary);
+    background: var(--shopee-light);
+    color: var(--shopee-primary);
+    transform: translateX(5px);
+}
+
+.sp-quick-link i {
+    font-size: 1.2rem;
+    color: var(--shopee-primary);
+}
+
+.sp-quick-link .link-content {
+    flex-grow: 1;
+}
+
+.sp-quick-link .link-title {
+    font-weight: 700;
+    font-size: 0.95rem;
+}
+
+.sp-quick-link .link-sub {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+}
+
+/* ── Section Cards ── */
+.sp-card {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-color);
+    border-radius: var(--sp-radius-lg);
+    box-shadow: var(--sp-shadow-sm);
+    overflow: hidden;
+}
+
+.sp-card-header {
+    padding: 1.25rem 1.5rem;
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.sp-card-header h5 {
+    margin: 0;
+    font-weight: 700;
+    font-size: 1rem;
+}
+
+.sp-card-body {
+    padding: 1.5rem;
+}
+
+.sp-card-body.p-0 {
+    padding: 0;
+}
+
+/* ── Clean Table ── */
+.sp-table-wrap {
+    overflow-x: auto;
+    overflow-y: auto;
+    max-height: calc(100vh - 280px); /* Keeps table within viewport so headers stick inside it */
+    scrollbar-width: thin;
+}
+
+.sp-table {
+    width: 100%;
+    border-collapse: separate; /* Changed to separate to fix sticky borders */
+    border-spacing: 0;
+}
+
+.sp-table th {
+    background: #f8fafc; /* Slightly darker to stand out */
+    color: var(--text-primary);
+    font-weight: 700;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 1rem 1.25rem;
+    border-bottom: 2px solid var(--border-color); /* Thicker border */
+    text-align: left;
+    position: sticky;
+    top: 0;
+    z-index: 10; /* High z-index to stay above content */
+    box-shadow: 0 1px 0 var(--border-color); /* Ensure border scrolls with header */
+}
+
+.sp-table td {
+    padding: 1rem 1.25rem;
+    border-bottom: 1px solid var(--border-color);
+    vertical-align: middle;
+    font-size: 0.9rem; /* Increased base font size */
+    color: var(--text-primary);
+}
+
+.sp-table tr:last-child td {
+    border-bottom: none;
+}
+
+.sp-table tbody tr {
+    transition: background 0.15s ease;
+}
+
+.sp-table tbody tr:hover {
+    background: var(--bg-surface-hover);
+}
+
+/* ── Badges ── */
+.sp-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    padding: 0.3rem 0.7rem;
+    border-radius: 999px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.sp-badge-success {
+    background: var(--sp-success-bg);
+    color: var(--sp-success);
+}
+
+.sp-badge-warning {
+    background: var(--sp-warning-bg);
+    color: var(--sp-warning);
+}
+
+.sp-badge-danger {
+    background: var(--sp-danger-bg);
+    color: var(--sp-danger);
+}
+
+.sp-badge-info {
+    background: var(--sp-info-bg);
+    color: var(--sp-info);
+}
+
+.sp-badge-neutral {
+    background: var(--sp-neutral-bg);
+    color: var(--sp-neutral-text);
+}
+
+.sp-badge-shopee {
+    background: var(--shopee-light);
+    color: var(--shopee-primary);
+}
+
+/* ── Stock Progress Bar ── */
+.sp-stock-bar-wrap {
+    width: 100%;
+    max-width: 120px;
+}
+
+.sp-stock-bar {
+    height: 6px;
+    border-radius: 3px;
+    background: var(--sp-neutral-bg);
+    overflow: hidden;
+}
+
+.sp-stock-bar-fill {
+    height: 100%;
+    border-radius: 3px;
+    transition: width 0.4s ease;
+}
+
+.sp-stock-bar-fill.healthy {
+    background: var(--sp-success);
+}
+
+.sp-stock-bar-fill.low {
+    background: var(--sp-warning);
+}
+
+.sp-stock-bar-fill.critical {
+    background: var(--sp-danger);
+}
+
+/* ── Allocation Slider ── */
+.sp-allocation-slider {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 6px;
+    border-radius: 3px;
+    background: var(--sp-neutral-bg);
+    outline: none;
+    transition: opacity 0.2s;
+}
+
+.sp-allocation-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--shopee-primary);
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(238, 77, 45, 0.3);
+    transition: transform 0.15s;
+}
+
+.sp-allocation-slider::-webkit-slider-thumb:hover {
+    transform: scale(1.2);
+}
+
+/* ── Quantity Control ── */
+.sp-qty-control {
+    display: inline-flex;
+    align-items: center;
+    border: 1px solid var(--border-color);
+    border-radius: var(--sp-radius-sm);
+    overflow: hidden;
+    background: transparent;
+}
+
+.sp-qty-btn {
+    border: none;
+    background: transparent;
+    padding: 0.4rem 0.85rem;
+    font-weight: bold;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all 0.15s;
+}
+
+.sp-qty-btn:hover {
+    background: var(--bg-surface-hover);
+    color: var(--text-primary);
+}
+
+.sp-qty-input {
+    border: none;
+    border-left: 1px solid var(--border-color);
+    border-right: 1px solid var(--border-color);
+    width: 55px;
+    text-align: center;
+    font-weight: 700;
+    font-size: 0.95rem;
+    background: transparent;
+    color: var(--text-primary);
+}
+
+.sp-qty-input:focus {
+    outline: none;
+}
+
+/* ── Test Banner ── */
+.sp-test-banner {
+    background: var(--sp-test-bg);
+    border: 1px solid var(--sp-test-border);
+    color: var(--sp-test-text);
+    padding: 0.65rem 1rem;
+    border-radius: var(--sp-radius-md);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1.25rem;
+    font-weight: 500;
+    font-size: 0.85rem;
+}
+
+/* ── Activity Timeline ── */
+.sp-timeline {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.sp-timeline-item {
+    display: flex;
+    gap: 1rem;
+    padding: 0.85rem 0;
+    border-bottom: 1px solid var(--border-color);
+    position: relative;
+}
+
+.sp-timeline-item:last-child {
+    border-bottom: none;
+}
+
+.sp-timeline-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin-top: 5px;
+    flex-shrink: 0;
+    box-shadow: 0 0 0 3px var(--bg-surface);
+}
+
+.sp-timeline-dot.success {
+    background: var(--sp-success);
+}
+
+.sp-timeline-dot.warning {
+    background: var(--sp-warning);
+}
+
+.sp-timeline-dot.danger {
+    background: var(--sp-danger);
+}
+
+.sp-timeline-dot.info {
+    background: var(--sp-info);
+}
+
+.sp-timeline-time {
+    font-size: 0.7rem;
+    color: var(--text-secondary);
+    margin-top: 2px;
+}
+
+.sp-timeline-text {
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+.sp-timeline-sub {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+}
+
+/* ── Search Input ── */
+.sp-search {
+    display: flex;
+    align-items: center;
+    background: var(--bg-surface);
+    border: 1px solid var(--border-color);
+    border-radius: var(--sp-radius-sm);
+    padding: 0 0.85rem;
+    transition: border-color 0.2s;
+}
+
+.sp-search:focus-within {
+    border-color: var(--shopee-primary);
+}
+
+.sp-search i {
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+}
+
+.sp-search input {
+    border: none;
+    background: transparent;
+    padding: 0.55rem 0.65rem;
+    color: var(--text-primary);
+    font-size: 0.85rem;
+    outline: none;
+    width: 100%;
+}
+
+/* ── Filter Pills ── */
+.sp-filter-pills {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.sp-pill {
+    padding: 0.35rem 0.85rem;
+    border-radius: 999px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    border: 1px solid var(--border-color);
+    background: transparent;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.sp-pill:hover {
+    border-color: var(--shopee-primary);
+    color: var(--shopee-primary);
+}
+
+.sp-pill.active {
+    background: var(--shopee-light);
+    border-color: var(--shopee-primary);
+    color: var(--shopee-primary);
+}
+
+/* ── Empty State ── */
+.sp-empty {
+    text-align: center;
+    padding: 3rem 1rem;
+}
+
+.sp-empty i {
+    font-size: 3rem;
+    color: var(--sp-neutral-text);
+    opacity: 0.4;
+    margin-bottom: 1rem;
+}
+
+.sp-empty h5 {
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.sp-empty p {
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+    max-width: 360px;
+    margin: 0 auto;
+}
+
+/* ── Loading Skeleton ── */
+.sp-skeleton {
+    background: linear-gradient(90deg, var(--sp-neutral-bg) 25%, var(--bg-surface-hover) 50%, var(--sp-neutral-bg) 75%);
+    background-size: 200% 100%;
+    border-radius: var(--sp-radius-sm);
+    animation: sp-shimmer 1.5s ease-in-out infinite;
+}
+
+@keyframes sp-shimmer {
+    0% {
+        background-position: 200% 0
+    }
+
+    100% {
+        background-position: -200% 0
+    }
+}
+
+/* ── Sub-nav Tabs ── */
+.sp-tabs {
+    display: flex;
+    gap: 0.25rem;
+    background: var(--sp-neutral-bg);
+    border-radius: var(--sp-radius-sm);
+    padding: 3px;
+    width: fit-content;
+}
+
+.sp-tab {
+    padding: 0.45rem 1rem;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    border: none;
+    background: transparent;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.sp-tab:hover {
+    color: var(--text-primary);
+}
+
+.sp-tab.active {
+    background: var(--bg-surface);
+    color: var(--shopee-primary);
+    box-shadow: var(--sp-shadow-sm);
+}
+
+/* ── Pulse Animation ── */
+.sp-pulse {
+    animation: sp-pulse-anim 2s ease-in-out infinite;
+}
+
+@keyframes sp-pulse-anim {
+
+    0%,
+    100% {
+        opacity: 1
+    }
+
+    50% {
+        opacity: 0.5
+    }
+}
+
+/* ── Confidence Meter ── */
+.sp-confidence {
+    display: flex;
+    gap: 2px;
+}
+
+.sp-confidence-bar {
+    width: 4px;
+    height: 16px;
+    border-radius: 2px;
+    background: var(--sp-neutral-bg);
+}
+
+.sp-confidence-bar.filled {
+    background: var(--sp-success);
+}
+
+.sp-confidence-bar.partial {
+    background: var(--sp-warning);
+}
+
+/* ── Modal ── */
+.sp-modal .modal-content {
+    border: none;
+    border-radius: var(--sp-radius-xl);
+    background: var(--bg-surface);
+    box-shadow: var(--sp-shadow-lg);
+}
+
+.sp-modal .modal-header {
+    border-bottom: 1px solid var(--border-color);
+    padding: 1.25rem 1.5rem;
+}
+
+.sp-modal .modal-body {
+    padding: 1.5rem;
+}
+
+.sp-modal .modal-footer {
+    border-top: 1px solid var(--border-color);
+    padding: 1rem 1.5rem;
+}
+
+/* ── Toggle Switch ── */
+.sp-toggle {
+    position: relative;
+    width: 44px;
+    height: 24px;
+    flex-shrink: 0;
+}
+
+.sp-toggle input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.sp-toggle-slider {
+    position: absolute;
+    inset: 0;
+    background: var(--sp-neutral-bg);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.sp-toggle-slider::before {
+    content: '';
+    position: absolute;
+    width: 18px;
+    height: 18px;
+    left: 3px;
+    bottom: 3px;
+    background: #fff;
+    border-radius: 50%;
+    transition: 0.3s;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.sp-toggle input:checked+.sp-toggle-slider {
+    background: var(--shopee-primary);
+}
+
+.sp-toggle input:checked+.sp-toggle-slider::before {
+    transform: translateX(20px);
+}
+
+/* ── Responsive ── */
+@media (max-width: 991.98px) {
+    .sp-stat-card {
+        padding: 1rem;
+    }
+
+    .sp-stat-value {
+        font-size: 1.25rem;
+    }
+
+    .sp-table th,
+    .sp-table td {
+        padding: 0.65rem 0.85rem;
+        font-size: 0.8rem;
+    }
+
+    .sp-hide-mobile {
+        display: none !important;
+    }
+
+    .sp-title {
+        font-size: 1.3rem;
+    }
+}
+
+@media (max-width: 575.98px) {
+    .sp-card-body {
+        padding: 1rem;
+    }
+
+    .sp-card-header {
+        padding: 1rem;
+    }
+}
+
+/* ── Fade In ── */
+.sp-animate {
+    animation: sp-fadeIn 0.35s ease-out;
+}
+
+@keyframes sp-fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(8px)
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0)
+    }
+}
+
+/* ── Sidebar Compatibility Fix ── */
+/* Ensure sp-page content doesn't overlap sidebar/navbar layers */
+.sp-page {
+    position: relative;
+    z-index: 1;
+}
+
+/* Higher than sidebar to ensure toggle works */
+#sidebarToggle {
+    position: relative !important;
+    z-index: 9999 !important;
+    pointer-events: auto !important;
+}

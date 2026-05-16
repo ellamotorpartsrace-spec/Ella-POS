@@ -10,3 +10,6 @@ backups/
 .vscode/
 .idea/
 *.log
+
+# Ignore files in scratch/ directory
+scratch/

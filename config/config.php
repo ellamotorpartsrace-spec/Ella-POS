@@ -13,9 +13,9 @@ if (session_status() === PHP_SESSION_NONE) {
     // Set session cookie parameters to ensure cookies work across all pages and API endpoints
     session_set_cookie_params([
         'lifetime' => 0,           // Session cookie (expires when browser closes)
-        'path'     => '/ella-pos/',    // Make cookie available across entire application
-        'domain'   => '',            // Current domain
-        'secure'   => !$isLocal,      // HTTPS only on production (false for local XAMPP)
+        'path' => '/ella-pos/',    // Make cookie available across entire application
+        'domain' => '',            // Current domain
+        'secure' => !$isLocal,      // HTTPS only on production (false for local XAMPP)
         'httponly' => true,        // Prevent JavaScript access
         'samesite' => 'Lax'        // CSRF protection while allowing navigation
     ]);

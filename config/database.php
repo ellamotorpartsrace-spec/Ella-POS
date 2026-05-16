@@ -15,13 +15,7 @@ class Database
     public function __construct()
     {
         // Detect Environment
-        $h = $_SERVER['HTTP_HOST'] ?? 'localhost';
-        // Assume anything on localhost, 127.0.0.1, or private network IPs is local
-        $isLocal = in_array($h, ['localhost', '127.0.0.1', '::1'])
-            || str_ends_with($h, '.test')
-            || str_starts_with($h, '192.168.')
-            || str_starts_with($h, '10.')
-            || str_starts_with($h, '172.');
+        $isLocal = true;
 
         if ($isLocal) {
             // --- LOCAL SETTINGS (XAMPP) ---
@@ -66,7 +60,7 @@ class Database
                 throw new Exception("Connection failed: " . $e->getMessage());
             } else {
                 error_log("Database Error: " . $e->getMessage());
-                die("A database error occurred. Please contact the administrator.");
+                die("DB ERROR: " . $e->getMessage());
             }
         }
         return $this->conn;
