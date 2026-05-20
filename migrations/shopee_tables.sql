@@ -48,7 +48,7 @@ CREATE TABLE IF NOT EXISTS `shopee_product_mappings` (
 -- 3. Sync logs
 CREATE TABLE IF NOT EXISTS `shopee_sync_logs` (
     `id` INT AUTO_INCREMENT PRIMARY KEY,
-    `event_type` ENUM('product_import','stock_update','order_sync','allocation','sync_failed','token_refresh') NOT NULL,
+    `event_type` ENUM('product_import','stock_update','order_sync','allocation','sync_failed','token_refresh','mapping') NOT NULL,
     `shopee_item_id` BIGINT DEFAULT NULL,
     `product_name` VARCHAR(500) DEFAULT NULL,
     `sku` VARCHAR(100) DEFAULT NULL,

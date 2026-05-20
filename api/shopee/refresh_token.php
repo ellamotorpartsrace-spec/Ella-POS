@@ -45,8 +45,8 @@ try {
         $errorMsg = $result['message'] ?? (is_string($result['error']) ? $result['error'] : json_encode($result['error']));
         
         // Log the failure
-        $conn->prepare("INSERT INTO shopee_sync_logs (event_type, source, status, error_message, created_at) VALUES ('token_refresh', 'Manual Refresh', 'failed', ?, NOW())")
-             ->execute([$errorMsg]);
+        $conn->prepare("INSERT INTO shopee_sync_logs (event_type, source, status, error_message, created_by, created_at) VALUES ('token_refresh', 'Manual Refresh', 'failed', ?, ?, NOW())")
+             ->execute([$errorMsg, $_SESSION['user_id'] ?? null]);
 
         echo json_encode(['success' => false, 'error' => 'Shopee API Error: ' . $errorMsg]);
         exit;
@@ -71,8 +71,8 @@ try {
     $stmt->execute([$newAccessToken, $newRefreshToken, $expiresAt]);
 
     // Log success
-    $conn->prepare("INSERT INTO shopee_sync_logs (event_type, source, status, created_at) VALUES ('token_refresh', 'Manual Refresh', 'success', NOW())")
-         ->execute();
+    $conn->prepare("INSERT INTO shopee_sync_logs (event_type, source, status, created_by, created_at) VALUES ('token_refresh', 'Manual Refresh', 'success', ?, NOW())")
+         ->execute([$_SESSION['user_id'] ?? null]);
 
     echo json_encode([
         'success' => true, 

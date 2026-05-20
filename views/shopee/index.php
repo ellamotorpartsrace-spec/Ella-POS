@@ -3,335 +3,397 @@
 $page_title = 'Shopee Sync — Dashboard';
 require_once '../../config/config.php';
 require_once '../../includes/auth.php';
-
 requireLogin();
 if ($_SESSION['role'] !== 'admin' && !in_array($_SESSION['role'], ['manager'])) {
     denyAccess("You do not have permission to access Shopee Sync.");
 }
-
 require_once '../../includes/header.php';
 require_once '../../includes/sidebar.php';
 ?>
-
-<link rel="stylesheet" href="<?= BASE_URL ?>assets/css/shopee-sync.css?v=<?= filemtime(__DIR__ . '/../../assets/css/shopee-sync.css') ?>">
+<link rel="stylesheet" href="<?= BASE_URL ?>assets/css/shopee-sync.css?v=<?= filemtime(__DIR__.'/../../assets/css/shopee-sync.css') ?>">
+<style>
+.sp-section-title {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-secondary);
+}
+.sp-dash-nav {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+}
+@media (max-width: 991px) {
+    .sp-dash-nav {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+@media (max-width: 575px) {
+    .sp-dash-nav {
+        grid-template-columns: 1fr;
+    }
+}
+.sp-nav-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 1.2rem;
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+    background: var(--bg-surface);
+    text-decoration: none;
+    color: var(--text-primary);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.sp-nav-card:hover {
+    border-color: var(--shopee-primary);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(238, 77, 45, 0.06);
+    color: var(--text-primary);
+}
+.sp-nav-card-icon {
+    width: 42px;
+    height: 42px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.15rem;
+    flex-shrink: 0;
+    transition: transform 0.3s;
+}
+.sp-nav-card:hover .sp-nav-card-icon {
+    transform: scale(1.08);
+}
+.sp-nav-card-content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    text-align: left;
+}
+.sp-nav-card-label {
+    font-weight: 700;
+    font-size: 0.88rem;
+    color: var(--text-primary);
+    transition: color 0.15s ease;
+}
+.sp-nav-card:hover .sp-nav-card-label {
+    color: var(--shopee-primary);
+}
+.sp-nav-card-desc {
+    font-size: 0.74rem;
+    color: var(--text-secondary);
+    line-height: 1.35;
+}
+.sp-health-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+.sp-alert-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.85rem 1.1rem;
+    border-radius: 10px;
+    background: var(--bg-surface);
+    border: 1px solid var(--border-color);
+    transition: all 0.15s ease;
+}
+.sp-alert-item:hover {
+    transform: translateX(3px);
+    border-color: var(--border-color-hover);
+}
+.sp-alert-item.danger {
+    border-left: 3.5px solid var(--sp-danger);
+}
+.sp-alert-item.warning {
+    border-left: 3.5px solid var(--sp-warning);
+}
+.sp-alert-item.success {
+    border-left: 3.5px solid var(--sp-success);
+}
+.sp-alert-left {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+.sp-alert-left i {
+    font-size: 1rem;
+}
+.sp-alert-title {
+    font-weight: 600;
+    font-size: 0.84rem;
+    color: var(--text-primary);
+}
+.sp-alert-count {
+    font-weight: 700;
+    font-size: 0.95rem;
+    font-family: 'SFMono-Regular', Consolas, monospace;
+}
+.sp-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    display: inline-block;
+    flex-shrink: 0;
+}
+.sp-dot.green {
+    background: var(--sp-success);
+    box-shadow: 0 0 6px var(--sp-success);
+}
+.sp-dot.red {
+    background: var(--sp-danger);
+    box-shadow: 0 0 6px var(--sp-danger);
+}
+.sp-dot.yellow {
+    background: var(--sp-warning);
+    box-shadow: 0 0 6px var(--sp-warning);
+}
+</style>
 
 <div class="sp-page sp-animate">
-
-    <!-- Breadcrumb -->
     <div class="sp-breadcrumb">
-        <a href="<?= BASE_URL ?>views/shopee/index.php">Shopee Sync</a>
-        <i class="fa-solid fa-chevron-right" style="font-size:0.6rem"></i>
+        <span>Shopee Sync</span>
+        <i class="fa-solid fa-chevron-right" style="font-size:.6rem"></i>
         <span>Dashboard</span>
     </div>
 
-    <!-- Header -->
     <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-3">
         <div>
             <div class="d-flex align-items-center gap-2 mb-1">
                 <h1 class="sp-title mb-0">Shopee Sync Dashboard</h1>
-                <span class="sp-badge sp-badge-success py-1 px-2" style="font-size:0.65rem">
-                    <span class="sp-status-dot online"></span>CONNECTED
-                </span>
+                <span class="sp-badge py-1 px-2" style="font-size:.65rem" id="connBadge"><span class="sp-dot yellow"></span> Checking...</span>
             </div>
-            <p class="sp-subtitle mb-0">Overview of your Shopee marketplace integration</p>
-        </div>
-        <div class="d-flex gap-2">
-            <button class="btn btn-shopee shadow-sm" onclick="triggerFullSync(this)">
-                <i class="fa-solid fa-cloud-arrow-down me-2"></i>Import Products
-            </button>
-        </div>
-    </div>
-
-    <!-- ── KPI CARDS ── -->
-    <div class="row g-3 mb-4">
-        <div class="col-lg-2 col-md-4 col-6">
-            <div class="sp-stat-card">
-                <div class="sp-stat-icon" style="background:var(--shopee-light);color:var(--shopee-primary)">
-                    <i class="fa-solid fa-bag-shopping"></i>
-                </div>
-                <div>
-                    <div class="sp-stat-label">Products</div>
-                    <div class="sp-stat-value" id="kpiSynced">0</div>
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-2 col-md-4 col-6">
-            <div class="sp-stat-card">
-                <div class="sp-stat-icon" style="background:var(--sp-info-bg);color:var(--sp-info)">
-                    <i class="fa-solid fa-cubes"></i>
-                </div>
-                <div>
-                    <div class="sp-stat-label">Online Stock</div>
-                    <div class="sp-stat-value" id="kpiOnline">0</div>
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-2 col-md-4 col-6">
-            <div class="sp-stat-card">
-                <div class="sp-stat-icon" style="background:var(--sp-success-bg);color:var(--sp-success)">
-                    <i class="fa-solid fa-circle-check"></i>
-                </div>
-                <div>
-                    <div class="sp-stat-label">Matched</div>
-                    <div class="sp-stat-value" id="kpiActive">0</div>
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-2 col-md-4 col-6">
-            <div class="sp-stat-card">
-                <div class="sp-stat-icon" style="background:var(--sp-warning-bg);color:var(--sp-warning)">
-                    <i class="fa-solid fa-triangle-exclamation"></i>
-                </div>
-                <div>
-                    <div class="sp-stat-label">Low Stock</div>
-                    <div class="sp-stat-value" id="kpiLow">0</div>
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-2 col-md-4 col-6">
-            <div class="sp-stat-card">
-                <div class="sp-stat-icon" style="background:var(--sp-danger-bg);color:var(--sp-danger)">
-                    <i class="fa-solid fa-box-open"></i>
-                </div>
-                <div>
-                    <div class="sp-stat-label">Out of Stock</div>
-                    <div class="sp-stat-value" id="kpiOos">0</div>
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-2 col-md-4 col-6">
-            <div class="sp-stat-card">
-                <div class="sp-stat-icon" style="background:var(--sp-danger-bg);color:var(--sp-danger)">
-                    <i class="fa-solid fa-circle-xmark"></i>
-                </div>
-                <div>
-                    <div class="sp-stat-label">Failed</div>
-                    <div class="sp-stat-value" id="kpiFailed">0</div>
-                </div>
-            </div>
+            <p class="sp-subtitle mb-0">Operational control center for your Shopee integration</p>
         </div>
     </div>
 
     <div class="row g-4">
-        <!-- Main Column -->
+        <!-- Left: Operations & Core Metrics -->
         <div class="col-lg-8">
-            <!-- Sync Activity Chart -->
-            <div class="sp-card mb-4">
-                <div class="sp-card-header">
-                    <h5 class="mb-0"><i class="fa-solid fa-chart-line text-shopee me-2"></i>Sync Performance</h5>
-                    <span class="small text-secondary">Last 7 Days</span>
-                </div>
-                <div class="sp-card-body">
-                    <div style="height:300px">
-                        <canvas id="chartSync"></canvas>
-                    </div>
+            <!-- Quick Navigation Tiles -->
+            <div class="mb-4">
+                <div class="sp-section-title mb-3"><i class="fa-solid fa-compass text-shopee me-2"></i>Quick Navigation</div>
+                <div class="sp-dash-nav">
+                    <a href="<?= BASE_URL ?>views/shopee/products.php" class="sp-nav-card">
+                        <div class="sp-nav-card-icon" style="background:var(--shopee-light);color:var(--shopee-primary)"><i class="fa-solid fa-bag-shopping"></i></div>
+                        <div class="sp-nav-card-content">
+                            <span class="sp-nav-card-label">Shopee Products</span>
+                            <span class="sp-nav-card-desc">Browse local and online synced listings catalog</span>
+                        </div>
+                    </a>
+                    <a href="<?= BASE_URL ?>views/shopee/mapping.php" class="sp-nav-card">
+                        <div class="sp-nav-card-icon" style="background:var(--sp-success-bg);color:var(--sp-success)"><i class="fa-solid fa-link"></i></div>
+                        <div class="sp-nav-card-content">
+                            <span class="sp-nav-card-label">Product Mapping</span>
+                            <span class="sp-nav-card-desc">Match local ERP items to Shopee listings</span>
+                        </div>
+                    </a>
+                    <a href="<?= BASE_URL ?>views/shopee/allocation.php" class="sp-nav-card">
+                        <div class="sp-nav-card-icon" style="background:var(--sp-info-bg);color:var(--sp-info)"><i class="fa-solid fa-sliders"></i></div>
+                        <div class="sp-nav-card-content">
+                            <span class="sp-nav-card-label">Stock Allocation</span>
+                            <span class="sp-nav-card-desc">Manage online stock safety limits and rules</span>
+                        </div>
+                    </a>
+                    <a href="<?= BASE_URL ?>views/shopee/resolution_center.php" class="sp-nav-card">
+                        <div class="sp-nav-card-icon" style="background:var(--sp-danger-bg);color:var(--sp-danger)"><i class="fa-solid fa-triangle-exclamation"></i></div>
+                        <div class="sp-nav-card-content">
+                            <span class="sp-nav-card-label">Resolution Center</span>
+                            <span class="sp-nav-card-desc">Detect and fix duplicate SKU inventory blocks</span>
+                        </div>
+                    </a>
+                    <a href="<?= BASE_URL ?>views/shopee/logs.php" class="sp-nav-card">
+                        <div class="sp-nav-card-icon" style="background:var(--sp-neutral-bg);color:var(--text-secondary)"><i class="fa-solid fa-clock-rotate-left"></i></div>
+                        <div class="sp-nav-card-content">
+                            <span class="sp-nav-card-label">Sync Logs</span>
+                            <span class="sp-nav-card-desc">Review automatic stock and order update events</span>
+                        </div>
+                    </a>
+                    <a href="<?= BASE_URL ?>views/shopee/settings.php" class="sp-nav-card">
+                        <div class="sp-nav-card-icon" style="background:var(--sp-warning-bg);color:var(--sp-warning)"><i class="fa-solid fa-gear"></i></div>
+                        <div class="sp-nav-card-content">
+                            <span class="sp-nav-card-label">Settings & Setup</span>
+                            <span class="sp-nav-card-desc">Configure API settings and system sync loops</span>
+                        </div>
+                    </a>
                 </div>
             </div>
 
-            <!-- Recent Activity Timeline -->
-            <div class="sp-card">
-                <div class="sp-card-header d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0"><i class="fa-solid fa-clock-rotate-left text-shopee me-2"></i>Recent Activity Logs</h5>
-                    <a href="<?= BASE_URL ?>views/shopee/logs.php" class="btn btn-ghost btn-sm">View Full History</a>
-                </div>
-                <div class="sp-card-body p-0">
-                    <ul class="sp-timeline mb-0" id="activityTimeline" style="padding: 1.5rem">
-                        <!-- Rendered by JS -->
-                    </ul>
+            <!-- Core Integration Metrics -->
+            <div>
+                <div class="sp-section-title mb-3"><i class="fa-solid fa-chart-simple text-shopee me-2"></i>Integration Metrics</div>
+                <div class="row g-3">
+                    <div class="col-sm-6">
+                        <div class="sp-stat-card accent-shopee">
+                            <div class="sp-stat-icon" style="background:var(--shopee-light);color:var(--shopee-primary)"><i class="fa-solid fa-bag-shopping"></i></div>
+                            <div>
+                                <div class="sp-stat-label">Total Sync Products</div>
+                                <div class="sp-stat-value" id="kTotalP">—</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="sp-stat-card">
+                            <div class="sp-stat-icon" style="background:var(--sp-info-bg);color:var(--sp-info)"><i class="fa-solid fa-layer-group"></i></div>
+                            <div>
+                                <div class="sp-stat-label">Total Variations</div>
+                                <div class="sp-stat-value" id="kTotalV">—</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="sp-stat-card accent-success">
+                            <div class="sp-stat-icon" style="background:var(--sp-success-bg);color:var(--sp-success)"><i class="fa-solid fa-link"></i></div>
+                            <div>
+                                <div class="sp-stat-label">Mapped Items</div>
+                                <div class="sp-stat-value" id="kMatched">—</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="sp-stat-card accent-warning">
+                            <div class="sp-stat-icon" style="background:var(--sp-warning-bg);color:var(--sp-warning)"><i class="fa-solid fa-link-slash"></i></div>
+                            <div>
+                                <div class="sp-stat-label">Unmapped Listings</div>
+                                <div class="sp-stat-value" id="kUnmatched">—</div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <!-- Sidebar Column -->
+        <!-- Right: System Status & Alerts Sidebar -->
         <div class="col-lg-4">
-            <!-- Sync Health Status Grid -->
-            <div class="sp-card mb-4">
-                <div class="sp-card-header">
-                    <h5 class="mb-0"><i class="fa-solid fa-heart-pulse text-shopee me-2"></i>System Health</h5>
-                </div>
-                <div class="sp-card-body">
-                    <div class="row g-2">
-                        <div class="col-6">
-                            <div class="sp-health-item">
-                                <div class="small text-secondary mb-1">API Connection</div>
-                                <div class="fw-bold text-success"><i class="fa-solid fa-circle-check me-1"></i>Active</div>
+            <div class="sp-health-sidebar">
+                <!-- System Connection Health -->
+                <div>
+                    <div class="sp-section-title mb-3"><i class="fa-solid fa-heart-pulse text-shopee me-2"></i>System Connection</div>
+                    <div class="sp-card">
+                        <div class="sp-card-body p-3 d-flex flex-column gap-3">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="small text-secondary fw-semibold">Shopee API</span>
+                                <div class="d-flex align-items-center gap-2">
+                                    <span class="sp-dot" id="dotConn"></span>
+                                    <span class="small fw-bold" id="valConn">—</span>
+                                </div>
                             </div>
-                        </div>
-                        <div class="col-6">
-                            <div class="sp-health-item">
-                                <div class="small text-secondary mb-1">Token Status</div>
-                                <div class="fw-bold text-success"><i class="fa-solid fa-shield-check me-1"></i>Secure</div>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="small text-secondary fw-semibold">Token Status</span>
+                                <div class="d-flex align-items-center gap-2">
+                                    <span class="sp-dot" id="dotToken"></span>
+                                    <span class="small fw-bold" id="valToken">—</span>
+                                </div>
                             </div>
-                        </div>
-                        <div class="col-6">
-                            <div class="sp-health-item">
-                                <div class="small text-secondary mb-1">Last Sync</div>
-                                <div class="fw-bold" id="lastSyncTime" style="font-size:0.85rem">Never</div>
-                            </div>
-                        </div>
-                        <div class="col-6">
-                            <div class="sp-health-item">
-                                <div class="small text-secondary mb-1">Environment</div>
-                                <div class="fw-bold text-info"><i class="fa-solid fa-flask me-1"></i>Test</div>
+                            <hr style="margin:0.25rem 0; opacity:0.08">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="small text-secondary fw-semibold"><i class="fa-solid fa-clock me-1"></i>Last Sync Event</span>
+                                <span class="small fw-bold text-dark" id="valLastSync">—</span>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- Quick Actions -->
-            <div class="sp-card">
-                <div class="sp-card-header">
-                    <h5 class="mb-0"><i class="fa-solid fa-wand-magic-sparkles text-shopee me-2"></i>Quick Tasks</h5>
-                </div>
-                <div class="sp-card-body d-grid gap-2">
-                    <a href="<?= BASE_URL ?>views/shopee/allocation.php" class="sp-quick-link">
-                        <i class="fa-solid fa-sliders"></i>
-                        <div class="link-content">
-                            <div class="link-title">Stock Allocation</div>
-                            <div class="link-sub">Control how much stock Shopee can sell</div>
+                <!-- Critical Alerts -->
+                <div>
+                    <div class="sp-section-title mb-3"><i class="fa-solid fa-bell text-shopee me-2"></i>Critical Health & Alerts</div>
+                    <div class="d-flex flex-column gap-2">
+                        <!-- Missing SKUs -->
+                        <div class="sp-alert-item danger">
+                            <div class="sp-alert-left">
+                                <i class="fa-solid fa-triangle-exclamation text-danger"></i>
+                                <span class="sp-alert-title">Missing SKUs</span>
+                            </div>
+                            <span class="sp-alert-count text-danger" id="kMissingErrors">—</span>
                         </div>
-                        <i class="fa-solid fa-chevron-right ms-auto" style="font-size:0.7rem; color:var(--text-secondary)"></i>
-                    </a>
-                    <a href="<?= BASE_URL ?>views/shopee/mapping.php" class="sp-quick-link">
-                        <i class="fa-solid fa-link"></i>
-                        <div class="link-content">
-                            <div class="link-title">Product Mapping</div>
-                            <div class="link-sub">Match Shopee listings to POS items</div>
+
+                        <!-- Duplicate SKUs -->
+                        <div class="sp-alert-item danger">
+                            <div class="sp-alert-left">
+                                <i class="fa-solid fa-clone text-danger"></i>
+                                <span class="sp-alert-title">Duplicate SKUs</span>
+                            </div>
+                            <span class="sp-alert-count text-danger" id="kDupErrors">—</span>
                         </div>
-                        <i class="fa-solid fa-chevron-right ms-auto" style="font-size:0.7rem; color:var(--text-secondary)"></i>
-                    </a>
-                    <a href="<?= BASE_URL ?>views/shopee/products.php" class="sp-quick-link">
-                        <i class="fa-solid fa-bag-shopping"></i>
-                        <div class="link-content">
-                            <div class="link-title">Inventory View</div>
-                            <div class="link-sub">Browse all imported Shopee products</div>
+
+                        <!-- Out of Stock -->
+                        <div class="sp-alert-item danger">
+                            <div class="sp-alert-left">
+                                <i class="fa-solid fa-circle-xmark text-danger"></i>
+                                <span class="sp-alert-title">Out of Stock</span>
+                            </div>
+                            <span class="sp-alert-count text-danger" id="kOos">—</span>
                         </div>
-                        <i class="fa-solid fa-chevron-right ms-auto" style="font-size:0.7rem; color:var(--text-secondary)"></i>
-                    </a>
-                    <a href="<?= BASE_URL ?>views/shopee/settings.php" class="sp-quick-link border-dashed" style="border-style:dashed">
-                        <i class="fa-solid fa-gear"></i>
-                        <div class="link-content">
-                            <div class="link-title">API Settings</div>
-                            <div class="link-sub">Update credentials and permissions</div>
+
+                        <!-- Low Stock -->
+                        <div class="sp-alert-item warning">
+                            <div class="sp-alert-left">
+                                <i class="fa-solid fa-box-open text-warning"></i>
+                                <span class="sp-alert-title">Low Stock Alert</span>
+                            </div>
+                            <span class="sp-alert-count text-warning" id="kLow">—</span>
                         </div>
-                        <i class="fa-solid fa-chevron-right ms-auto" style="font-size:0.7rem; color:var(--text-secondary)"></i>
-                    </a>
+
+                        <!-- Synced (24h) -->
+                        <div class="sp-alert-item success">
+                            <div class="sp-alert-left">
+                                <i class="fa-solid fa-rotate text-success"></i>
+                                <span class="sp-alert-title">Updates (24h)</span>
+                            </div>
+                            <span class="sp-alert-count text-success" id="kRecent">—</span>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-
 </div>
 
-<!-- Chart.js CDN -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js" async></script>
-
 <script>
-async function loadDashboard() {
+document.addEventListener('DOMContentLoaded', async () => {
     try {
-        const res = await fetch(`${window.BASE_URL}api/shopee/get_dashboard_stats.php`);
+        const res  = await fetch(`${window.BASE_URL}api/shopee/get_dashboard_stats.php`);
         const data = await res.json();
+        if (!data.success) return;
+        const k = data.kpi, s = data.status;
 
-        if (data.success) {
-            // Update KPI
-            document.getElementById('kpiSynced').textContent = data.kpi.synced.toLocaleString();
-            document.getElementById('kpiOnline').textContent = data.kpi.online.toLocaleString();
-            document.getElementById('kpiActive').textContent = data.kpi.active.toLocaleString();
-            document.getElementById('kpiLow').textContent = data.kpi.low.toLocaleString();
-            document.getElementById('kpiOos').textContent = data.kpi.oos.toLocaleString();
-            document.getElementById('kpiFailed').textContent = data.kpi.failed.toLocaleString();
-            document.getElementById('lastSyncTime').textContent = data.kpi.last_sync;
-
-            // Update Timeline
-            const tl = document.getElementById('activityTimeline');
-            if (data.timeline && data.timeline.length) {
-                tl.innerHTML = data.timeline.map(a => `
-                    <li class="sp-timeline-item">
-                        <div class="sp-timeline-dot ${a.dot}"></div>
-                        <div class="flex-grow-1">
-                            <div class="sp-timeline-text">${a.text}</div>
-                            <div class="sp-timeline-sub text-truncate" style="max-width:300px">${a.sub}</div>
-                        </div>
-                        <div class="sp-timeline-time">${a.time}</div>
-                    </li>
-                `).join('');
-            } else {
-                tl.innerHTML = '<div class="text-center py-4 text-secondary small">No recent activity</div>';
-            }
-
-            // Update Charts
-            if (data.charts && data.charts.sync && data.charts.sync.length) {
-                renderSyncChart(data.charts.sync);
-            }
+        // KPIs
+        document.getElementById('kTotalP').textContent    = k.total_products.toLocaleString();
+        document.getElementById('kTotalV').textContent    = k.total_variations.toLocaleString();
+        document.getElementById('kMatched').textContent   = k.matched.toLocaleString();
+        document.getElementById('kUnmatched').textContent = k.unmatched.toLocaleString();
+        
+        let missingErrors = 0;
+        let duplicateErrors = 0;
+        if (data.health) {
+            if (data.health.missing_errors !== undefined) missingErrors = data.health.missing_errors;
+            if (data.health.duplicate_errors !== undefined) duplicateErrors = data.health.duplicate_errors;
         }
-    } catch (e) {
-        console.error('Failed to load dashboard:', e);
-    }
-}
+        document.getElementById('kMissingErrors').textContent = missingErrors.toLocaleString();
+        document.getElementById('kDupErrors').textContent     = duplicateErrors.toLocaleString();
+        
+        document.getElementById('kLow').textContent       = k.low_stock.toLocaleString();
+        document.getElementById('kOos').textContent       = k.oos.toLocaleString();
+        document.getElementById('kRecent').textContent    = k.recently_synced.toLocaleString();
 
-function renderSyncChart(syncData) {
-    if (typeof Chart === 'undefined') {
-        // If Chart.js is still loading asynchronously, wait and retry
-        setTimeout(() => renderSyncChart(syncData), 200);
-        return;
-    }
-    const labels = syncData.map(d => d.date);
-    const success = syncData.map(d => d.success);
-    const failed = syncData.map(d => d.failed);
+        // Connection badge
+        const cb = document.getElementById('connBadge');
+        if (s.connected) { cb.innerHTML = '<span class="sp-dot green"></span> Connected'; cb.className = 'sp-badge sp-badge-success py-1 px-2'; cb.style.fontSize='.65rem'; }
+        else             { cb.innerHTML = '<span class="sp-dot red"></span> Not Connected'; cb.className = 'sp-badge sp-badge-danger py-1 px-2'; cb.style.fontSize='.65rem'; }
 
-    const ctx = document.getElementById('chartSync');
-    if (!ctx) return;
-    
-    const existing = Chart.getChart(ctx);
-    if (existing) existing.destroy();
+        // Status bar
+        document.getElementById('dotConn').className  = 'sp-dot '+(s.connected   ? 'green':'red');
+        document.getElementById('dotToken').className = 'sp-dot '+(s.token_valid ? 'green':'red');
+        document.getElementById('valConn').textContent    = s.connected   ? 'Active' : 'Not configured';
+        document.getElementById('valToken').textContent   = s.token_valid ? 'Valid'  : 'Expired / Missing';
+        document.getElementById('valLastSync').textContent= s.last_sync;
 
-    new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: labels,
-            datasets: [
-                { label:'Successful', data: success, borderColor:'#34d399', tension:0.3, pointRadius:3, borderWidth:2 },
-                { label:'Failed', data: failed, borderColor:'#f87171', tension:0.3, pointRadius:3, borderWidth:2 }
-            ]
-        },
-        options: { 
-            responsive: true, maintainAspectRatio: false,
-            plugins: { legend: { display: true, position:'bottom', labels:{ boxWidth:8, usePointStyle:true, pointStyle:'circle', color: '#94a3b8', font:{size:10} } } },
-            scales: {
-                x: { grid: { display: false }, ticks: { color: '#94a3b8', font: { size: 10 } } },
-                y: { grid: { color: 'rgba(255,255,255,0.08)' }, ticks: { color: '#94a3b8', font: { size: 10 } }, beginAtZero: true }
-            }
-        }
-    });
-}
-
-document.addEventListener('DOMContentLoaded', () => {
-    loadDashboard();
+    } catch(e) { console.error('Dashboard load failed:', e); }
 });
-
-async function triggerFullSync(btn) {
-    if (!btn) btn = event?.currentTarget || document.querySelector('.btn-shopee');
-    const originalText = btn.innerHTML;
-    btn.disabled = true;
-    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin me-2"></i>Syncing...';
-    
-    try {
-        const res = await fetch(`${window.BASE_URL}api/shopee/fetch_products.php`);
-        const data = await res.json();
-        if (data.success) {
-            if (typeof EllaToast !== 'undefined') EllaToast.success('Import completed successfully');
-            loadDashboard();
-        } else {
-            if (typeof EllaToast !== 'undefined') EllaToast.error(data.error);
-        }
-    } catch (e) {
-        if (typeof EllaToast !== 'undefined') EllaToast.error('Network error');
-    } finally {
-        btn.disabled = false;
-        btn.innerHTML = originalText;
-    }
-}
 </script>
 
 <?php require_once '../../includes/footer.php'; ?>

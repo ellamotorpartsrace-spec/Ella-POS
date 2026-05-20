@@ -89,10 +89,17 @@ try {
             ];
         }
 
-        $batches[$pid]['stock_list'][] = [
-            'model_id' => (int) $job['online_variation_id'],
-            'normal_stock' => (int) $job['new_quantity']
+        $stockItem = [
+            'seller_stock' => [
+                [
+                    'stock' => (int) $job['new_quantity']
+                ]
+            ]
         ];
+        if (!empty($job['online_variation_id'])) {
+            $stockItem['model_id'] = (int) $job['online_variation_id'];
+        }
+        $batches[$pid]['stock_list'][] = $stockItem;
         $batches[$pid]['queue_ids'][] = $job['queue_id'];
     }
 

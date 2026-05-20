@@ -16,6 +16,16 @@ $authSuccess = isset($_GET['auth']) && $_GET['auth'] === 'success';
 $authShopId  = $_GET['shop_id'] ?? '';
 ?>
 <link rel="stylesheet" href="<?= BASE_URL ?>assets/css/shopee-sync.css?v=<?= filemtime(__DIR__ . '/../../assets/css/shopee-sync.css') ?>">
+<style>
+@keyframes countdownPulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.75; }
+    100% { opacity: 1; }
+}
+.countdown-pulse {
+    animation: countdownPulse 1.5s infinite ease-in-out;
+}
+</style>
 
 <div class="sp-page sp-animate">
     <div class="sp-breadcrumb">
@@ -151,17 +161,25 @@ $authShopId  = $_GET['shop_id'] ?? '';
 
             <!-- Token Info -->
             <div class="sp-card mb-4" id="tokenCard" style="display:none">
-                <div class="sp-card-header">
+                <div class="sp-card-header d-flex justify-content-between align-items-center">
                     <h5><i class="fa-solid fa-shield-halved text-shopee me-2"></i>Token Status</h5>
+                    <button class="btn btn-link btn-sm p-0 text-shopee" style="font-size:0.75rem; text-decoration:none; font-weight: 500;" onclick="copyAccessToken()" id="copyTokenHeaderBtn">
+                        <i class="fa-solid fa-copy me-1"></i>Copy Token
+                    </button>
                 </div>
                 <div class="sp-card-body">
                     <div class="d-flex justify-content-between mb-2 pb-2" style="border-bottom:1px solid var(--border-color)">
-                        <span class="small text-secondary">Access Token</span>
+                        <span class="small text-secondary">Token Validity</span>
                         <span class="sp-badge" id="tokenAccessBadge">—</span>
                     </div>
-                    <div class="d-flex justify-content-between mb-2 pb-2" style="border-bottom:1px solid var(--border-color)">
+                    <div class="d-flex justify-content-between align-items-center mb-2 pb-2" style="border-bottom:1px solid var(--border-color)">
+                        <span class="small text-secondary">Access Token</span>
+                        <span class="sp-badge sp-badge-success" id="tokenActiveStatus">Active</span>
+                    </div>
+                    <input type="hidden" id="tokenValue">
+                    <div class="d-flex justify-content-between align-items-center mb-2 pb-2" style="border-bottom:1px solid var(--border-color)">
                         <span class="small text-secondary">Expires</span>
-                        <span class="small" id="tokenExpiry">—</span>
+                        <span class="small text-secondary d-inline-flex align-items-center gap-2" id="tokenExpiry">—</span>
                     </div>
                     <div class="d-flex justify-content-between mb-3">
                         <span class="small text-secondary">Environment</span>
@@ -173,16 +191,52 @@ $authShopId  = $_GET['shop_id'] ?? '';
                 </div>
             </div>
 
-            <!-- Quick Test -->
+            <!-- Smart Sync -->
             <div class="sp-card" id="importCard" style="display:none">
                 <div class="sp-card-header">
-                    <h5><i class="fa-solid fa-cloud-arrow-down text-shopee me-2"></i>Import Products</h5>
+                    <h5><i class="fa-solid fa-cloud-arrow-down text-shopee me-2"></i>Smart Sync Products</h5>
                 </div>
                 <div class="sp-card-body">
-                    <p class="small text-secondary mb-3">Pull all products and stock levels from your Shopee shop. This will auto-match products to your POS inventory by SKU.</p>
-                    <div id="importStatus" class="mb-3" style="display:none"></div>
-                    <button class="btn btn-shopee w-100" onclick="importProducts()" id="btnImport">
-                        <i class="fa-solid fa-cloud-arrow-down me-2"></i>Import All Products from Shopee
+                    <p class="small text-secondary mb-3">Fetch products and stock levels from your Shopee store using batch processing to prevent freezing. Select your sync mode below.</p>
+                    
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold text-secondary">Sync Mode</label>
+                        <select class="form-select mb-2" id="syncMode">
+                            <option value="quick" selected>⚡ Quick Sync (Only changed/new products)</option>
+                            <option value="full">🔄 Full Sync (Re-fetch all products & variations)</option>
+                            <option value="stock">📦 Stock Sync Only (Fast stock updates)</option>
+                            <option value="price">💰 Price Sync Only (Fast price updates)</option>
+                            <option value="mapping">🔗 Mapping Sync (Re-check unmatched products)</option>
+                        </select>
+                        <div class="small text-secondary" id="syncModeDesc">Fastest. Only fetches products updated on Shopee since your last sync.</div>
+                    </div>
+
+                    <div id="importStatus" class="mb-3" style="display:none">
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <span class="fw-bold small" id="syncProgressLabel">Initializing Sync...</span>
+                            <span class="small text-secondary" id="syncProgressCount">0 / 0</span>
+                        </div>
+                        <div class="sp-progress-wrap mb-2">
+                            <div class="sp-progress-fill" id="syncProgressBar" style="width:0%;background:var(--shopee-primary)"></div>
+                        </div>
+                        <div class="alert alert-info py-2 small mb-0" id="syncLogText"><i class="fa-solid fa-spinner fa-spin me-2"></i>Starting queue...</div>
+                    </div>
+
+                    <button class="btn btn-shopee w-100" onclick="startSmartSync()" id="btnImport">
+                        <i class="fa-solid fa-play me-2"></i>Start Sync
+                    </button>
+                </div>
+            </div>
+
+            <!-- Danger Zone: Reset Integration -->
+            <div class="sp-card border-danger mt-4" id="resetCard" style="display:none">
+                <div class="sp-card-header bg-danger-light" style="border-bottom:1px solid rgba(220,53,69,0.1)">
+                    <h5 class="text-danger mb-0"><i class="fa-solid fa-triangle-exclamation me-2"></i>Danger Zone</h5>
+                </div>
+                <div class="sp-card-body">
+                    <p class="small text-secondary mb-3">Wipe all cached Shopee products, variants, logs, and mapping records. This does <strong>NOT</strong> delete your API credentials. You can start completely fresh from scratch!</p>
+                    <button class="btn btn-outline-danger w-100" onclick="resetIntegrationData()" id="btnResetData">
+                        <i class="fa-solid fa-trash-can me-2"></i>Reset & Start Fresh
                     </button>
                 </div>
             </div>
@@ -192,6 +246,51 @@ $authShopId  = $_GET['shop_id'] ?? '';
 
 <script>
 let currentEnv = 'test';
+let expiryTimer = null;
+let tokenExpiresTime = null;
+let rawTokenExpiresStr = "";
+
+function startExpiryCountdown() {
+    if (expiryTimer) {
+        clearInterval(expiryTimer);
+        expiryTimer = null;
+    }
+    
+    if (!tokenExpiresTime) {
+        document.getElementById('tokenExpiry').textContent = '—';
+        return;
+    }
+    
+    function updateCountdown() {
+        const now = Date.now();
+        const diffMs = tokenExpiresTime - now;
+
+        if (diffMs > 0) {
+            const totalSecs = Math.floor(diffMs / 1000);
+            const hours = Math.floor(totalSecs / 3600);
+            const mins = Math.floor((totalSecs % 3600) / 60);
+            const secs = totalSecs % 60;
+            
+            let durationStr = "";
+            if (hours > 0) {
+                durationStr += `${hours}h `;
+            }
+            durationStr += `${mins}m ${secs}s left`;
+            document.getElementById('tokenExpiry').innerHTML = `
+                <span class="text-dark countdown-pulse">${durationStr}</span>
+            `;
+        } else {
+            document.getElementById('tokenExpiry').innerHTML = `
+                <span class="text-danger">Expired</span>
+            `;
+            clearInterval(expiryTimer);
+            expiryTimer = null;
+        }
+    }
+    
+    updateCountdown(); // Run immediately
+    expiryTimer = setInterval(updateCountdown, 1000);
+}
 
 function setEnv(env) {
     currentEnv = env;
@@ -257,28 +356,56 @@ async function authorizeShop() {
     }
 }
 
-// ── Import Products ──
-async function importProducts() {
+// ── Smart Sync System ──
+document.getElementById('syncMode')?.addEventListener('change', function() {
+    const descs = {
+        'quick': 'Fastest. Only fetches products updated on Shopee since your last sync.',
+        'full': 'Slowest. Deeply re-fetches every product, variation, image, and price from Shopee.',
+        'stock': 'Fast. Only updates stock levels from Shopee, ignoring name/image changes.',
+        'price': 'Fast. Only updates price changes from Shopee.',
+        'mapping': 'Instant. Runs auto-matching algorithms against existing unmatched products.'
+    };
+    document.getElementById('syncModeDesc').textContent = descs[this.value];
+});
+
+async function startSmartSync() {
     const btn = document.getElementById('btnImport');
     const status = document.getElementById('importStatus');
+    const mode = document.getElementById('syncMode').value;
+    const logText = document.getElementById('syncLogText');
+    const progBar = document.getElementById('syncProgressBar');
+    const progLbl = document.getElementById('syncProgressLabel');
+    const progCnt = document.getElementById('syncProgressCount');
 
     btn.disabled = true;
-    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin me-2"></i>Importing from Shopee...';
+    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin me-2"></i>Sync in progress...';
     status.style.display = 'block';
     
-    let totalItems = 0;
-    let totalRows = 0;
-    let totalInserted = 0;
-    let totalUpdated = 0;
-    let totalMatched = 0;
-    let offset = 0;
-    let hasNextPage = true;
+    // Reset UI
+    progBar.style.width = '0%'; progBar.style.background = 'var(--shopee-primary)';
+    progLbl.textContent = 'Initializing Queue...';
+    progCnt.textContent = '0 / ?';
+    logText.className = 'alert alert-info py-2 small mb-0';
+    logText.innerHTML = '<i class="fa-solid fa-spinner fa-spin me-2"></i>Contacting Shopee API...';
+
+    let totalItems = 0, totalRows = 0, totalInserted = 0, totalUpdated = 0, totalMatched = 0;
+    let offset = 0, hasNextPage = true, queueId = null;
 
     try {
+        // Step 1: Init Queue
+        const initRes = await fetch(`${window.BASE_URL}api/shopee/sync_init.php`, {
+            method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({mode})
+        });
+        const initData = await initRes.json();
+        if (!initData.success) throw new Error(initData.error);
+        queueId = initData.queue_id;
+
+        // Step 2: Loop chunks
+        let chunksProcessed = 0;
         while (hasNextPage) {
-            status.innerHTML = `<div class="alert alert-info py-2 small"><i class="fa-solid fa-spinner fa-spin me-2"></i>Fetching products from Shopee API (Page Offset: ${offset})... This may take a moment.</div>`;
+            logText.innerHTML = `<i class="fa-solid fa-spinner fa-spin me-2"></i>Processing batch ${chunksProcessed + 1} (Offset: ${offset})...`;
             
-            const res = await fetch(`${window.BASE_URL}api/shopee/fetch_products.php?offset=${offset}`);
+            const res = await fetch(`${window.BASE_URL}api/shopee/fetch_products.php?offset=${offset}&mode=${mode}&queue_id=${queueId}`);
             const data = await res.json();
             
             if (data.success) {
@@ -290,30 +417,41 @@ async function importProducts() {
                 
                 hasNextPage = data.has_next_page;
                 offset = data.next_offset;
+                chunksProcessed++;
+
+                // Update Progress (Fake estimation based on pagination, or actual if API provides total)
+                progCnt.textContent = `${offset} processed`;
+                progBar.style.width = hasNextPage ? Math.min(100, (chunksProcessed * 15)) + '%' : '100%';
             } else {
-                status.innerHTML = `<div class="alert alert-danger py-2 small"><i class="fa-solid fa-xmark me-2"></i>${data.error}</div>`;
-                EllaToast.error(data.error);
-                hasNextPage = false;
-                break;
+                throw new Error(data.error);
             }
         }
         
-        if (totalItems > 0 || !hasNextPage) {
-            status.innerHTML = `<div class="alert alert-success py-2 small">
-                <i class="fa-solid fa-check-circle me-2"></i>
-                <strong>Import complete!</strong><br>
-                Total items: ${totalItems} · Rows: ${totalRows}<br>
-                New: ${totalInserted} · Updated: ${totalUpdated} · Auto-matched: ${totalMatched}
-            </div>`;
-            EllaToast.success(`Imported ${totalRows} products from Shopee!`);
-        }
+        // Step 3: Complete Queue
+        await fetch(`${window.BASE_URL}api/shopee/sync_complete.php`, {
+            method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({queue_id: queueId, status: 'completed'})
+        });
+        
+        progBar.style.background = 'var(--sp-success)';
+        progLbl.textContent = 'Sync Completed Successfully!';
+        logText.className = 'alert alert-success py-2 small mb-0';
+        logText.innerHTML = `<i class="fa-solid fa-check-circle me-2"></i><strong>Done!</strong><br>New: ${totalInserted} · Updated: ${totalUpdated}`;
+        EllaToast.success(`Smart Sync (${mode}) completed successfully!`);
         
     } catch (e) {
-        status.innerHTML = `<div class="alert alert-danger py-2 small"><i class="fa-solid fa-xmark me-2"></i>${e.message}</div>`;
-        EllaToast.error('Network error');
+        if (queueId) {
+            fetch(`${window.BASE_URL}api/shopee/sync_complete.php`, {
+                method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({queue_id: queueId, status: 'failed', error: e.message})
+            });
+        }
+        progBar.style.background = 'var(--sp-danger)';
+        progLbl.textContent = 'Sync Failed';
+        logText.className = 'alert alert-danger py-2 small mb-0';
+        logText.innerHTML = `<i class="fa-solid fa-xmark me-2"></i>${e.message}`;
+        EllaToast.error('Sync error: ' + e.message);
     } finally {
         btn.disabled = false;
-        btn.innerHTML = '<i class="fa-solid fa-cloud-arrow-down me-2"></i>Import All Products from Shopee';
+        btn.innerHTML = '<i class="fa-solid fa-play me-2"></i>Start Sync Again';
     }
 }
 
@@ -380,12 +518,42 @@ async function loadStatus() {
             tokenCard.style.display = 'block';
             document.getElementById('tokenAccessBadge').className = 'sp-badge sp-badge-' + (data.token_status === 'valid' ? 'success' : 'danger');
             document.getElementById('tokenAccessBadge').textContent = data.token_status === 'valid' ? 'Valid' : 'Expired';
-            document.getElementById('tokenExpiry').textContent = data.token_expires ? data.token_expires + ` (${data.token_days_left}d left)` : '—';
+            
+            // Access Token
+            const tokenVal = data.access_token || '';
+            document.getElementById('tokenValue').value = tokenVal;
+            
+            const activeStatusEl = document.getElementById('tokenActiveStatus');
+            const copyBtn = document.getElementById('copyTokenHeaderBtn');
+            
+            if (data.token_status === 'valid' && tokenVal) {
+                activeStatusEl.className = 'sp-badge sp-badge-success';
+                activeStatusEl.textContent = 'Active';
+                if (copyBtn) copyBtn.style.display = 'inline-block';
+            } else {
+                activeStatusEl.className = 'sp-badge sp-badge-danger';
+                activeStatusEl.textContent = 'Inactive';
+                if (copyBtn) copyBtn.style.display = 'none';
+            }
+
+            // Live Countdown Timer for Expiry
+            if (data.token_expires) {
+                rawTokenExpiresStr = data.token_expires;
+                tokenExpiresTime = new Date(data.token_expires.replace(/-/g, "/")).getTime();
+                startExpiryCountdown();
+            } else {
+                tokenExpiresTime = null;
+                rawTokenExpiresStr = "";
+                startExpiryCountdown();
+            }
+
             document.getElementById('tokenEnvBadge').className = 'sp-badge sp-badge-' + (data.environment === 'test' ? 'info' : 'success');
             document.getElementById('tokenEnvBadge').textContent = data.environment.toUpperCase();
 
-            // Import card
+            // Import card and Reset card
             importCard.style.display = 'block';
+            const resetCard = document.getElementById('resetCard');
+            if (resetCard) resetCard.style.display = 'block';
 
         } else {
             document.getElementById('statusIcon').style.background = 'var(--sp-info-bg)';
@@ -437,6 +605,46 @@ async function refreshTokens() {
             btn.disabled = false;
             btn.innerHTML = '<i class="fa-solid fa-rotate me-2"></i>Refresh Tokens';
         }
+    }
+}
+
+function copyAccessToken() {
+    const val = document.getElementById('tokenValue').value;
+    if (!val) {
+        EllaToast.error('No access token available to copy.');
+        return;
+    }
+    navigator.clipboard.writeText(val);
+    EllaToast.success('Access token copied to clipboard!');
+}
+
+async function resetIntegrationData() {
+    if (!confirm('WARNING: Are you absolutely sure you want to delete all cached Shopee products, variants, mapping history, error logs, and sync logs? This action is permanent and cannot be undone.')) {
+        return;
+    }
+    
+    const btn = document.getElementById('btnResetData');
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin me-2"></i>Wiping Data...';
+    
+    try {
+        const res = await fetch(`${window.BASE_URL}api/shopee/reset_integration.php`, {
+            method: 'POST'
+        });
+        const data = await res.json();
+        if (data.success) {
+            EllaToast.success(data.message);
+            setTimeout(() => {
+                window.location.reload();
+            }, 1000);
+        } else {
+            EllaToast.error(data.error || 'Wipe failed');
+        }
+    } catch (e) {
+        EllaToast.error('Network error: ' + e.message);
+    } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fa-solid fa-trash-can me-2"></i>Reset & Start Fresh';
     }
 }
 

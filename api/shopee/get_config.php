@@ -13,7 +13,7 @@ try {
     $db = new Database();
     $conn = $db->getConnection();
 
-    $stmt = $conn->prepare("SELECT id, environment, partner_id, partner_key, shop_id, shop_region, token_expires_at, shop_name, is_active, 
+    $stmt = $conn->prepare("SELECT id, environment, partner_id, partner_key, shop_id, shop_region, token_expires_at, access_token, shop_name, is_active, 
         CASE WHEN access_token IS NOT NULL AND access_token != '' THEN 1 ELSE 0 END as has_token,
         CASE WHEN refresh_token IS NOT NULL AND refresh_token != '' THEN 1 ELSE 0 END as has_refresh,
         CASE WHEN partner_key IS NOT NULL AND partner_key != '' THEN 1 ELSE 0 END as has_key,
@@ -57,6 +57,7 @@ try {
         'partner_key'    => $config['partner_key'],
         'shop_id'        => $config['shop_id'],
         'shop_region'    => $config['shop_region'],
+        'access_token'   => $config['access_token'] ?? '',
         'has_key'        => (bool) $config['has_key'],
         'authorized'     => (bool) $config['has_token'],
         'token_status'   => $tokenStatus,
